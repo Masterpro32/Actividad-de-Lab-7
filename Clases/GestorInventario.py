@@ -92,3 +92,74 @@ class GestorInventario:
             print(f"Precio: S/. {producto['precio']:.2f}")
             print(f"Stock: {producto['stock']}")
             print("-" * 35)
+            def _pedir_nombre_producto(self):
+        while True:
+            nombre = input("Nombre del producto: ").strip()
+            nombre_minuscula = nombre.lower()
+
+            if nombre_minuscula in self.VALORES_INVALIDOS:
+                print("Error: el nombre no puede estar vacío.")
+            elif len(nombre) < 3 or len(nombre) > 60:
+                print("Error: el nombre debe tener entre 3 y 60 caracteres.")
+            elif nombre.isdigit():
+                print("Error: el nombre no puede ser solo números.")
+            elif all(not caracter.isalnum() and not caracter.isspace() for caracter in nombre):
+                print("Error: el nombre no puede contener solo símbolos.")
+            elif any(p["nombre"].lower() == nombre_minuscula for p in self.productos):
+                print("Error: ya existe un producto con ese nombre.")
+            else:
+                return nombre
+
+    def _pedir_codigo_producto(self):
+        while True:
+            print("\nPrefijos permitidos:")
+            for letra, categoria in self.CATEGORIAS.items():
+                print(f"{letra} -> {categoria}")
+
+            codigo = input("Código del producto (Ejemplo: C001): ").strip().upper()
+
+            if codigo.lower() in self.VALORES_INVALIDOS:
+                print("Error: el código no puede estar vacío.")
+            elif len(codigo) != 4:
+                print("Error: el código debe tener 4 caracteres.")
+            elif codigo[0] not in self.CATEGORIAS:
+                print("Error: prefijo de categoría inválido.")
+            elif not codigo[1:].isdigit():
+                print("Error: después del prefijo deben ir 3 números.")
+            elif any(p["codigo"] == codigo for p in self.productos):
+                print("Error: ya existe un producto con ese código.")
+            else:
+                return codigo, self.CATEGORIAS[codigo[0]]
+
+    def _pedir_precio(self, mensaje):
+        while True:
+            entrada = input(mensaje).strip()
+
+            if entrada.lower() in self.VALORES_INVALIDOS:
+                print("Error: entrada inválida.")
+            elif not re.fullmatch(r"\d+(\.\d{1,2})?", entrada):
+                print("Error: ingrese un número positivo con máximo 2 decimales.")
+            else:
+                precio = float(entrada)
+                if precio > 0:
+                    return precio
+                print("Error: el precio debe ser mayor a 0.")
+
+    def _pedir_precio_compra(self, precio_venta):
+        while True:
+            precio_compra = self._pedir_precio("Precio de compra (S/.): ")
+            if precio_compra < precio_venta:
+                return precio_compra
+            print("Error: el precio de compra debe ser menor al precio de venta.")
+
+    def _pedir_entero(self, mensaje, minimo):
+        while True:
+            entrada = input(mensaje).strip()
+
+            try:
+                numero = int(entrada)
+                if numero >= minimo:
+                    return numero
+                print(f"Error: el valor mínimo permitido es {minimo}.")
+            except ValueError:
+                print("Error: ingrese un número entero válido.")
