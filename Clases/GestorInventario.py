@@ -1,4 +1,3 @@
-
 import re
 
 
@@ -14,7 +13,7 @@ class GestorInventario:
 
     VALORES_INVALIDOS = {"", "nan", "inf", "-inf", "infinity", "null", "undefined", "none"}
 
-    def _init_(self, productos_cargados=None):
+    def __init__(self, productos_cargados=None):
         self.productos = productos_cargados if productos_cargados is not None else []
 
     def registrar_producto(self):
@@ -93,7 +92,8 @@ class GestorInventario:
             print(f"Precio: S/. {producto['precio']:.2f}")
             print(f"Stock: {producto['stock']}")
             print("-" * 35)
-            def _pedir_nombre_producto(self):
+
+    def _pedir_nombre_producto(self):
         while True:
             nombre = input("Nombre del producto: ").strip()
             nombre_minuscula = nombre.lower()
